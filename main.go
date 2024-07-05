@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	_ "go-fiber-bootstrap/docs"
-	"go-fiber-bootstrap/orm"
-	"go-fiber-bootstrap/routes"
+	_ "go-chat-service/docs"
+	"go-chat-service/orm"
+	"go-chat-service/routes"
 	"log"
 	"os"
 )
@@ -32,25 +32,9 @@ import (
 //	@name						Authorization
 //	@description				Description for what is this security definition being used
 
-//	@securitydefinitions.oauth2.application	OAuth2Application
-//	@tokenUrl								https://example.com/oauth/token
-//	@scope.write							Grants write access
-//	@scope.admin							Grants read and write access to administrative information
-
-//	@securitydefinitions.oauth2.implicit	OAuth2Implicit
-//	@authorizationUrl						https://example.com/oauth/authorize
-//	@scope.write							Grants write access
-//	@scope.admin							Grants read and write access to administrative information
-
-//	@securitydefinitions.oauth2.password	OAuth2Password
-//	@tokenUrl								https://example.com/oauth/token
-//	@scope.read								Grants read access
-//	@scope.write							Grants write access
-//	@scope.admin							Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.accessCode	OAuth2AccessCode
+// @securitydefinitions.oauth2.application	OAuth2Application
 // @tokenUrl								https://example.com/oauth/token
-// @authorizationUrl						https://example.com/oauth/authorize
+// @scope.write							Grants write access
 // @scope.admin							Grants read and write access to administrative information
 func main() {
 

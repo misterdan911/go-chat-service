@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"go-fiber-bootstrap/dto"
-	"go-fiber-bootstrap/model"
-	"go-fiber-bootstrap/service/authservice"
+	"go-chat-service/dto"
+	"go-chat-service/model"
+	"go-chat-service/service/authservice"
 	"log"
 )
 

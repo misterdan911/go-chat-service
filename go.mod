@@ -1,4 +1,4 @@
-module go-fiber-bootstrap
+module go-chat-service
 
 go 1.22.2
 
