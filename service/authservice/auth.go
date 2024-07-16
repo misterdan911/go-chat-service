@@ -27,36 +27,6 @@ func AddNewUser(user *model.User) error {
 	}
 }
 
-/*
-func ValidateSignInnnn() error {
-	var isValidUser bool
-
-	// Create a new SignInData struct
-	signInData := new(SignInData)
-
-	// Parse the JSON request body into the signInData struct
-	if err := c.BodyParser(signInData); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "cannot parse SignIn JSON",
-		})
-	}
-
-	var user model.User
-	err := orm.DB.First(&user, "email = ?", signInData.Email).Error
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		isValidUser = false
-	}
-
-	passwordIsSame := passwordIsSame(request.Password, users.Password)
-
-	if !passwordIsSame {
-		isValidUser = false
-	}
-
-}
-*/
-
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err

@@ -102,27 +102,11 @@ func SignUp(c *fiber.Ctx) error {
 		}
 	}
 
-	// Access the parsed user data
-	// For example, you can print it or save it to the orm
-	println("Name: ", user.Username)
-	println("Email: ", user.Email)
-	println("Password: ", user.Password)
-
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		log.Println("Error marshaling JSON:", err)
 		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
 	}
-
-	// Send a response
-	/*
-		return c.JSON(fiber.Map{
-			"status": "success",
-			"data":   user,
-		})
-	*/
-
-	//return c.JSON(jsonResponse)
 
 	c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 	return c.Send(jsonResponse)
@@ -152,14 +136,6 @@ func SignIn(c *fiber.Ctx) error {
 	userData.Password = ""
 
 	var response interface{}
-
-	/*
-		if err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-	*/
 
 	if isValid {
 		resData := SignInResponseData{

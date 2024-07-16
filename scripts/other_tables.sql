@@ -1,19 +1,3 @@
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `phone_number` varchar(15) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `phone_number` (`phone_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-
 DROP TABLE IF EXISTS `private_chat`;
 CREATE TABLE `private_chat` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
