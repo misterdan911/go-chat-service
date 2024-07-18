@@ -18,9 +18,8 @@ func Setup(app *fiber.App) {
 
 	apiBaseRoute := app.Group("/api")
 
-	authRoute := apiBaseRoute.Group("/auth")
-	authRoute.Post("/signup", controller.SignUp)
-	authRoute.Post("/login", controller.SignIn)
+	apiBaseRoute.Post("/register", controller.SignUp)
+	apiBaseRoute.Post("/login", controller.SignIn)
 
 	userRoute := apiBaseRoute.Group("/user", middleware.JwtVerifier)
 	userRoute.Get("/", controller.GetAllUser)
