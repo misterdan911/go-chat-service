@@ -1,12 +1,16 @@
 package authservice
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
+	"go-chat-service/db"
 	"go-chat-service/dto"
 	"go-chat-service/model"
 	"go-chat-service/orm"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"log"
@@ -17,11 +21,15 @@ import (
 func AddNewUser(user *model.User) error {
 
 	user.Password, _ = HashPassword(user.Password)
-	result := orm.DB.Create(user)
+
+	user.ID = primitive.NewObjectID()
+	insertOneResult, err := db.DB.Collection("users").InsertOne(context.Background(), user)
+
+	fmt.Println(insertOneResult)
 
 	// Check for errors
-	if result.Error != nil {
-		return errors.New("Failed creating new user, " + result.Error.Error())
+	if err != nil {
+		return errors.New("Failed creating new user, " + err.Error())
 	} else {
 		return nil
 	}

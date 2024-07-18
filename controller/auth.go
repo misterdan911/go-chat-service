@@ -2,13 +2,13 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"go-chat-service/dto"
 	"go-chat-service/model"
 	"go-chat-service/service/authservice"
 	"log"
+	"time"
 )
 
 type SignInResponseData struct {
@@ -43,48 +43,60 @@ func init() {
 //	@Produce		json
 //	@Param			user	body		ExampleSignedUpUser	true	"Add user"
 //	@Success		200		{object}	AppResponse
-//	@Failure		400		{object}	model.User
-//	@Failure		404		{object}	model.User
-//	@Failure		500		{object}	model.User
-//	@Router			/api/v1/auth/signup [post]
+//	@Failure		400		{object}	ExampleSignedUpUser
+//	@Router			/api/register [post]
 func SignUp(c *fiber.Ctx) error {
 
 	// Create a new User struct
-	user := new(model.User)
+	userSignUp := new(dto.SignedUpUser)
 
 	// Parse the JSON request body into the user struct
-	if err := c.BodyParser(user); err != nil {
+	if err := c.BodyParser(userSignUp); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "cannot parse JSON",
 		})
 	}
 
 	// Validate the user struct
-	if err := validate.Struct(user); err != nil {
-		// Format validation errors
-		errors := make(map[string]string)
-		for _, err := range err.(validator.ValidationErrors) {
-			var message string
+	/*
+		if err := validate.Struct(user); err != nil {
+			// Format validation errors
+			errors := make(map[string]string)
+			for _, err := range err.(validator.ValidationErrors) {
+				var message string
 
-			switch err.Tag() {
-			case "email_unique":
-				message = "Email has already been registered"
-			case "username_unique":
-				message = "Username has already been registered"
-			default:
-				//message = fmt.Sprintf("Field '%s' is invalid", err.Field())
-				message = fmt.Sprintf("Field '%s' %s", err.Field(), err.Tag())
+				switch err.Tag() {
+				case "email_unique":
+					message = "Email has already been registered"
+				case "username_unique":
+					message = "Username has already been registered"
+				default:
+					//message = fmt.Sprintf("Field '%s' is invalid", err.Field())
+					message = fmt.Sprintf("Field '%s' %s", err.Field(), err.Tag())
+				}
+
+				errors[err.Field()] = message
 			}
-
-			errors[err.Field()] = message
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"status": "fail",
+				"data":   errors,
+			})
 		}
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status": "fail",
-			"data":   errors,
-		})
-	}
+	*/
 
 	// Create
+	user := new(model.User)
+	user.Email = userSignUp.Email
+	user.FirstName = userSignUp.FirstName
+	user.Level = "standard"
+	user.Password = userSignUp.Password
+	user.Phone = ""
+	user.LastName = userSignUp.LastName
+	user.Username = userSignUp.Username
+	user.Favorites = make([]string, 0)
+	user.TagLine = "New Clover User"
+	user.LastOnline = time.Now()
+
 	err := authservice.AddNewUser(user)
 	user.Password = ""
 	var response interface{}
@@ -96,10 +108,7 @@ func SignUp(c *fiber.Ctx) error {
 			Message: err.Error(),
 		}
 	} else {
-		response = AppResponse{
-			Status: "success",
-			Data:   user,
-		}
+		response = user
 	}
 
 	jsonResponse, err := json.Marshal(response)
@@ -121,7 +130,7 @@ func SignUp(c *fiber.Ctx) error {
 //	@Produce		json
 //	@Param			user	body		ExampleSignedInUser	true	"SignIn User"
 //	@Success		200		{object}	AppResponse
-//	@Router			/api/v1/auth/signin [post]
+//	@Router			/api/login [post]
 func SignIn(c *fiber.Ctx) error {
 
 	signedInUser := new(dto.SignedInUser)

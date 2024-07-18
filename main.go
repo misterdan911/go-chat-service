@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	"go-chat-service/db"
 	_ "go-chat-service/docs"
-	"go-chat-service/orm"
 	"go-chat-service/routes"
 	"log"
 	"os"
@@ -43,7 +43,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	orm.ConnectDatabase()
+	db.ConnectDatabase()
 
 	app := fiber.New()
 	routes.Setup(app)

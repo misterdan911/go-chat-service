@@ -1,9 +1,37 @@
 package model
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
+
+/*
 type User struct {
-	ID          uint   `json:"id" gorm:"primaryKey"`
-	Username    string `json:"username" validate:"required,username_unique"`
-	Email       string `json:"email" validate:"required,email,email_unique"`
-	Password    string `json:"password,omitempty" validate:"required"`
-	DisplayName string `json:"display_name" validate:"required"`
+	ID         string   `json:"id" gorm:"primaryKey"`
+	Email      string   `json:"email" validate:"required,email,email_unique"`
+	FirstName  string   `json:"firstName" validate:"required"`
+	Level      string   `json:"level" validate:"required"`
+	Password   string   `json:"password,omitempty" validate:"required"`
+	Phone      string   `json:"phone,omitempty"`
+	LastName   string   `json:"lastName"`
+	Username   string   `json:"username" validate:"required,username_unique"`
+	Favorites  []string `json:"favorites"`
+	Tagline    string   `json:"tagline"`
+	LastOnline string   `json:"lastOnline"`
+}
+*/
+
+type User struct {
+	ID primitive.ObjectID `bson:"_id" json:"_id"`
+	//Email      string   `json:"email" validate:"required,email,email_unique"`
+	Email      string    `bson:"email" json:"email"`
+	FirstName  string    `bson:"firstName" json:"firstName"`
+	Level      string    `bson:"level" json:"level"`
+	Password   string    `bson:"password,omitempty" json:"password,omitempty"`
+	Phone      string    `bson:"phone" json:"phone"`
+	LastName   string    `bson:"lastName" json:"lastName"`
+	Username   string    `bson:"username" json:"username"`
+	Favorites  []string  `bson:"favorites" json:"favorites"`
+	TagLine    string    `bson:"tagLine" json:"tagLine"`
+	LastOnline time.Time `bson:"lastOnline" json:"lastOnline"`
 }

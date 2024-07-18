@@ -10,7 +10,7 @@ import "github.com/gofiber/fiber/v2"
 //	@Accept			json
 //	@Produce		json
 //	@Param			q	query		string	false	"name search by q"	Format(email)
-//	@Success		200	{array}		model.User
+//	@Success		200	{array}		[]string
 //	@Router			/api/v1/user [get]
 func GetAllUser(c *fiber.Ctx) error {
 	return c.SendString("Helooooooooooooooooooooo")
