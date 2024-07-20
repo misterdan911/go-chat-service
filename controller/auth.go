@@ -11,13 +11,20 @@ import (
 	"time"
 )
 
-type SignInResponseData struct {
-	User model.User `json:"user"`
-	Jwt  string     `json:"jwt"`
+type SignInSuccessResponse struct {
+	Token string `json:"token"`
 }
 
 type SignInFailMessage struct {
 	SignIn string `json:"signin"`
+}
+
+type UserNotFound struct {
+	Email string `json:"email"`
+}
+
+type WrongPassword struct {
+	Password string `json:"password"`
 }
 
 var validate = validator.New()
@@ -141,22 +148,18 @@ func SignIn(c *fiber.Ctx) error {
 		})
 	}
 
-	isValid, userData, jwt := authservice.ValidateSignIn(signedInUser)
+	isValid, userData, jwt, invalidType := authservice.ValidateSignIn(signedInUser)
 	userData.Password = ""
 
 	var response interface{}
 
 	if isValid {
-		resData := SignInResponseData{
-			User: userData,
-			Jwt:  jwt,
-		}
-		response = AppResponse{Status: "success", Data: resData}
+		response = SignInSuccessResponse{Token: jwt}
 	} else {
-		signInFailMessage := SignInFailMessage{SignIn: "Incorrect username, email, or password"}
-		response = AppResponse{
-			Status: "fail",
-			Data:   signInFailMessage,
+		if invalidType == "email" {
+			response = UserNotFound{Email: "User not Found"}
+		} else {
+			response = WrongPassword{Password: "Wrong Password"}
 		}
 	}
 

@@ -21,6 +21,16 @@ func Setup(app *fiber.App) {
 	apiBaseRoute.Post("/register", controller.SignUp)
 	apiBaseRoute.Post("/login", controller.SignIn)
 
+	//apiBaseRoute.Post("/rooms/list", controller.RoomList)
+
+	// Group routes that require JWT verification
+	protectedRoutes := apiBaseRoute.Group("/", middleware.JwtVerifier)
+	protectedRoutes.Post("/rooms/list", controller.RoomList)
+
+	//apiBaseRoute.Post("/meeting/list", controller.RoomList)
+	//apiBaseRoute.Post("/favorites/list", controller.RoomList)
+	//apiBaseRoute.Post("/search", controller.RoomList)
+
 	userRoute := apiBaseRoute.Group("/user", middleware.JwtVerifier)
 	userRoute.Get("/", controller.GetAllUser)
 

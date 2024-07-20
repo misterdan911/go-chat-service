@@ -22,16 +22,15 @@ type User struct {
 */
 
 type User struct {
-	ID primitive.ObjectID `bson:"_id" json:"_id"`
-	//Email      string   `json:"email" validate:"required,email,email_unique"`
-	Email      string    `bson:"email" json:"email"`
-	FirstName  string    `bson:"firstName" json:"firstName"`
-	Level      string    `bson:"level" json:"level"`
-	Password   string    `bson:"password,omitempty" json:"password,omitempty"`
-	Phone      string    `bson:"phone" json:"phone"`
-	LastName   string    `bson:"lastName" json:"lastName"`
-	Username   string    `bson:"username" json:"username"`
-	Favorites  []string  `bson:"favorites" json:"favorites"`
-	TagLine    string    `bson:"tagLine" json:"tagLine"`
-	LastOnline time.Time `bson:"lastOnline" json:"lastOnline"`
+	ID         primitive.ObjectID `bson:"_id" json:"_id"`
+	Email      string             `bson:"email" json:"email"`
+	FirstName  string             `bson:"firstName" json:"firstName"`
+	Level      string             `bson:"level" json:"level"`
+	Password   string             `bson:"password,omitempty" json:"password,omitempty"`
+	Phone      string             `bson:"phone" json:"phone"`
+	LastName   string             `bson:"lastName" json:"lastName"`
+	Username   string             `bson:"username" json:"username"`
+	Favorites  []string           `bson:"favorites" json:"favorites"`
+	TagLine    string             `bson:"tagLine" json:"tagLine"`
+	LastOnline time.Time          `bson:"lastOnline" json:"lastOnline"`
 }

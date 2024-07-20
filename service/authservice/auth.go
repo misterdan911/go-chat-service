@@ -10,9 +10,10 @@ import (
 	"go-chat-service/dto"
 	"go-chat-service/model"
 	"go-chat-service/orm"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"log"
 	"os"
 	"time"
@@ -72,13 +73,14 @@ func UsernameUnique(fl validator.FieldLevel) bool {
 	}
 }
 
-func GenerateJWT() (string, error) {
+func GenerateJWT(myCustomClaims MyCustomClaims) (string, error) {
 
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"foo": "bar",
-		"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		"foo":      "bar",
+		"nbf":      time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		"username": myCustomClaims.Username,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -88,19 +90,22 @@ func GenerateJWT() (string, error) {
 	return tokenString, err
 }
 
-func ValidateSignIn(signedInUser *dto.SignedInUser) (bool, model.User, string) {
+func ValidateSignIn(signedInUser *dto.SignedInUser) (bool, model.User, string, string) {
 
 	var isValidUser bool
 	var user model.User
 	var jwtToken string = ""
 
-	err := orm.DB.First(&user, "username = ?", signedInUser.Username).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		err = orm.DB.First(&user, "email = ?", signedInUser.Email).Error
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			isValidUser = false
-			//validateError := errors.New("Invalid user or email")
-			return isValidUser, user, jwtToken
+	err := db.DB.Collection("users").FindOne(context.Background(), bson.M{"username": signedInUser.Email}).Decode(&user)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			err = db.DB.Collection("users").FindOne(context.Background(), bson.M{"email": signedInUser.Email}).Decode(&user)
+			if err != nil {
+				if errors.Is(err, mongo.ErrNoDocuments) {
+					isValidUser = false
+					return isValidUser, user, jwtToken, "email"
+				}
+			}
 		}
 	}
 
@@ -108,16 +113,15 @@ func ValidateSignIn(signedInUser *dto.SignedInUser) (bool, model.User, string) {
 
 	if !passwordMatch {
 		isValidUser = false
-		//validateError := errors.New("SignIn failed. Please check your username or email and password")
-		return isValidUser, user, jwtToken
+		return isValidUser, user, jwtToken, "password"
 	}
 
-	jwtToken, errJwt := GenerateJWT()
+	jwtToken, errJwt := GenerateJWT(MyCustomClaims{Username: user.Username})
 
 	if errJwt != nil {
 		log.Fatal("Error generating JWT", err)
 	}
 
 	isValidUser = true
-	return isValidUser, user, jwtToken
+	return isValidUser, user, jwtToken, ""
 }
