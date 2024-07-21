@@ -64,7 +64,10 @@ func JwtVerifier(c *fiber.Ctx) error {
 		// Extract the claims and the user ID
 		if claims, ok := token.Claims.(*authservice.MyCustomClaims); ok {
 			// Inject the user ID into the Fiber context
-			c.Locals("login_username", claims.Username)
+			//c.Locals("username", claims.Username)
+			//c.Locals("userid", claims.UserId)
+			//fmt.Println("claims.UserId" + claims.UserId)
+			c.Locals("user_id", claims.UserId)
 		} else {
 			return c.Status(fiber.StatusUnauthorized).SendString("Invalid token claims")
 		}

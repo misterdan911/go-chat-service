@@ -2,9 +2,10 @@ package authservice
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type MyCustomClaims struct {
-	Username string `bson:"username" json:"username"`
+	UserId primitive.ObjectID `bson:"user_id" json:"user_id"`
 	jwt.RegisteredClaims
 }

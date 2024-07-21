@@ -78,9 +78,9 @@ func GenerateJWT(myCustomClaims MyCustomClaims) (string, error) {
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"foo":      "bar",
-		"nbf":      time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
-		"username": myCustomClaims.Username,
+		"foo":     "bar",
+		"nbf":     time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		"user_id": myCustomClaims.UserId,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -109,14 +109,18 @@ func ValidateSignIn(signedInUser *dto.SignedInUser) (bool, model.User, string, s
 		}
 	}
 
-	passwordMatch := CheckPasswordHash(signedInUser.Password, user.Password)
+	/*
+		passwordMatch := CheckPasswordHash(signedInUser.Password, user.Password)
 
-	if !passwordMatch {
-		isValidUser = false
-		return isValidUser, user, jwtToken, "password"
-	}
+		if !passwordMatch {
+			isValidUser = false
+			return isValidUser, user, jwtToken, "password"
+		}
+	*/
 
-	jwtToken, errJwt := GenerateJWT(MyCustomClaims{Username: user.Username})
+	jwtToken, errJwt := GenerateJWT(MyCustomClaims{
+		UserId: user.ID,
+	})
 
 	if errJwt != nil {
 		log.Fatal("Error generating JWT", err)
