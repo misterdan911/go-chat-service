@@ -20,6 +20,7 @@ func Setup(app *fiber.App) {
 
 	apiBaseRoute.Post("/register", controller.SignUp)
 	apiBaseRoute.Post("/login", controller.SignIn)
+	apiBaseRoute.Get("/info", controller.Info)
 
 	//apiBaseRoute.Post("/rooms/list", controller.RoomList)
 
