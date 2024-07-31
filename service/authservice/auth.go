@@ -73,14 +73,23 @@ func UsernameUnique(fl validator.FieldLevel) bool {
 	}
 }
 
-func GenerateJWT(myCustomClaims MyCustomClaims) (string, error) {
+func GenerateJWT(user *model.User) (string, error) {
+
+	// get Picture data of the user
+	var image model.Image
+	err := db.DB.Collection("images").FindOne(context.Background(), bson.M{"_id": user.Picture}).Decode(&image)
 
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"foo":     "bar",
-		"nbf":     time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
-		"user_id": myCustomClaims.UserId,
+		"nbf":       time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		"id":        user.ID,
+		"email":     user.Email,
+		"level":     user.Level,
+		"firstName": user.FirstName,
+		"lastName":  user.LastName,
+		"username":  user.Username,
+		"picture":   image,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -118,9 +127,7 @@ func ValidateSignIn(signedInUser *dto.SignedInUser) (bool, model.User, string, s
 		}
 	*/
 
-	jwtToken, errJwt := GenerateJWT(MyCustomClaims{
-		UserId: user.ID,
-	})
+	jwtToken, errJwt := GenerateJWT(&user)
 
 	if errJwt != nil {
 		log.Fatal("Error generating JWT", err)

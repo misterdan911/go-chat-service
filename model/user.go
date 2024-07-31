@@ -30,7 +30,7 @@ type User struct {
 	Phone      string             `bson:"phone" json:"phone"`
 	LastName   string             `bson:"lastName" json:"lastName"`
 	Username   string             `bson:"username" json:"username"`
-	Picture    Image              `bson:"picture" json:"picture"`
+	Picture    primitive.ObjectID `bson:"picture" json:"picture"`
 	Favorites  []string           `bson:"favorites" json:"favorites"`
 	TagLine    string             `bson:"tagLine" json:"tagLine"`
 	LastOnline time.Time          `bson:"lastOnline" json:"lastOnline"`

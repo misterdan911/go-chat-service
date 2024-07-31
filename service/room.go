@@ -10,7 +10,7 @@ import (
 	"log"
 )
 
-func GetRoomList(userId primitive.ObjectID, limit int64, rooms *[]model.Room) error {
+func GetRoomList(userId primitive.ObjectID, limit int64, rooms *[]model.RoomData) error {
 
 	pipeline := mongo.Pipeline{
 		bson.D{
