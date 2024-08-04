@@ -4,9 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/gofiber/contrib/socketio"
 	"github.com/gofiber/fiber/v2"
 	"go-chat-service/db"
 	"go-chat-service/dto"
+	"go-chat-service/internal/mysocketio"
 	"go-chat-service/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -85,6 +88,20 @@ func Message(c *fiber.Ctx) error {
 	// save message to DB
 	_, err := db.DB.Collection("messages").InsertOne(context.Background(), message)
 
+	var updatedDocument model.Room
+	filter := bson.D{{"_id", message.Room}}
+	update := bson.D{{"$set", bson.D{{"lastMessage", message.ID}, {"lastUpdate", message.Date}}}}
+	errUpdate := db.DB.Collection("rooms").FindOneAndUpdate(context.Background(), filter, update).Decode(&updatedDocument)
+
+	if errUpdate != nil {
+		// ErrNoDocuments means that the filter did not match any documents in
+		//the collection.
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			log.Fatal("filter did not match any documents in rooms")
+		}
+		log.Fatal("Error updating lastMessage")
+	}
+
 	//fmt.Println("message.ID: " + message.ID.Hex())
 
 	// Check for errors
@@ -145,6 +162,31 @@ func Message(c *fiber.Ctx) error {
 		Room:    room,
 	}
 
+	out, err := json.Marshal(messageResponse)
+	if err != nil {
+		panic(err)
+	}
+
+	// Tes Emit
+	//mysocketio.Kws.Emit([]byte(messageResponse.Message.Content), socketio.TextMessage)
+	//mysocketio.Kws.Emit(out, socketio.TextMessage)
+
+	var counter int = 0
+
+	for _, userId := range updatedDocument.People {
+
+		fmt.Println(counter)
+		fmt.Println(userId.Hex())
+		if message.Author != userId {
+			err = mysocketio.Kws.EmitTo(mysocketio.Clients[userId.Hex()], out, socketio.TextMessage)
+		}
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		counter++
+	}
+
 	// supaya field2 response json nya sesuai urutan kita
 	jsonResponse, err := json.Marshal(messageResponse)
 	if err != nil {
@@ -155,6 +197,4 @@ func Message(c *fiber.Ctx) error {
 	// supaya response headernya 'application/json'
 	c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 	return c.Send(jsonResponse)
-
-	return nil
 }

@@ -7,12 +7,13 @@ import (
 
 // The key for the map is message.to
 var Clients map[string]string
+var Kws *socketio.Websocket
 
 func DefineSocketAction() {
 
 	// Multiple event handling supported
 	socketio.On(socketio.EventConnect, func(ep *socketio.EventPayload) {
-		fmt.Printf("Connection event 1 - User: %s", ep.Kws.GetStringAttribute("user_id"))
+		fmt.Println("Connection event 1 - User: %s", ep.Kws.GetStringAttribute("user_id"))
 	})
 
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/joho/godotenv"
 	"go-chat-service/db"
 	_ "go-chat-service/docs"
+	"go-chat-service/internal/mysocketio"
 	"go-chat-service/routes"
 	"log"
 	"os"
@@ -44,6 +45,8 @@ func main() {
 	}
 
 	db.ConnectDatabase()
+
+	mysocketio.Clients = nil
 
 	app := fiber.New()
 	routes.Setup(app)

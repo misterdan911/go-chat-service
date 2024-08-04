@@ -12,6 +12,10 @@ import (
 	"go-chat-service/middleware"
 )
 
+type Iseng struct {
+	User string `bson:"user" json:"user"`
+}
+
 func Setup(app *fiber.App) {
 
 	app.Use(cors.New())
@@ -58,13 +62,31 @@ func Setup(app *fiber.App) {
 		//clients[userId] = kws.UUID
 		mysocketio.Clients[userId] = kws.UUID
 
+		for _, socketClient := range mysocketio.Clients {
+			fmt.Println(socketClient)
+		}
+
 		// Every websocket connection has an optional session key => value storage
 		kws.SetAttribute("user_id", userId)
 
-		//Broadcast to all the connected users the newcomer
-		kws.Broadcast([]byte(fmt.Sprintf("New user connected: %s and UUID: %s", userId, kws.UUID)), true, socketio.TextMessage)
+		//Broadcast to all the connected users the newcomerout, err := json.Marshal(message2)
+		//		if err != nil {
+		//			panic(err)
+		//		}
+		//kws.Broadcast([]byte(fmt.Sprintf("New user connected: %s and UUID: %s", userId, kws.UUID)), true, socketio.TextMessage)
 		//Write welcome message
-		kws.Emit([]byte(fmt.Sprintf("Hello user: %s with UUID: %s", userId, kws.UUID)), socketio.TextMessage)
+		//kws.Emit([]byte(fmt.Sprintf("Hello user: %s with UUID: %s", userId, kws.UUID)), socketio.TextMessage)
+
+		/*
+			var message2 Iseng
+			message2 = Iseng{
+				User: "budi",
+			}
+
+			kws.Emit(out, socketio.TextMessage)
+		*/
+
+		mysocketio.Kws = kws
 	}))
 
 	app.Get("/swagger/*", swagger.HandlerDefault) // default

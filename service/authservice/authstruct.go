@@ -7,6 +7,6 @@ import (
 
 // Kayanya gak kepake
 type MyCustomClaims struct {
-	UserId primitive.ObjectID `bson:"user_id" json:"user_id"`
+	UserId primitive.ObjectID `bson:"_id" json:"id"`
 	jwt.RegisteredClaims
 }

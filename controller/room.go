@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"go-chat-service/model"
 	"go-chat-service/service"
@@ -17,7 +16,7 @@ type RoomListDto struct {
 func RoomList(c *fiber.Ctx) error {
 
 	userId := c.Locals("user_id").(primitive.ObjectID)
-	fmt.Println("UserId: " + userId.Hex())
+	//fmt.Println("UserId: " + userId.Hex())
 
 	// convert string to primitive.ObjectID
 	// primitive.ObjectIDFromHex(hexString)

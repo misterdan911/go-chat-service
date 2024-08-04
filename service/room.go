@@ -29,10 +29,39 @@ func GetRoomList(userId primitive.ObjectID, limit int64, rooms *[]model.RoomData
 		bson.D{
 			{"$lookup",
 				bson.D{
+					{"from", "messages"},
+					{"localField", "lastMessage"},
+					{"foreignField", "_id"},
+					{"as", "lastMessage"},
+				},
+			},
+		},
+		bson.D{{"$unwind", bson.D{{"path", "$lastMessage"}}}},
+		bson.D{
+			{"$lookup",
+				bson.D{
 					{"from", "users"},
 					{"localField", "people"},
 					{"foreignField", "_id"},
 					{"as", "people"},
+				},
+			},
+		},
+		bson.D{
+			{"$lookup",
+				bson.D{
+					{"from", "images"},
+					{"localField", "picture"},
+					{"foreignField", "_id"},
+					{"as", "picture"},
+				},
+			},
+		},
+		bson.D{
+			{"$unwind",
+				bson.D{
+					{"path", "$picture"},
+					{"preserveNullAndEmptyArrays", true},
 				},
 			},
 		},
@@ -49,17 +78,6 @@ func GetRoomList(userId primitive.ObjectID, limit int64, rooms *[]model.RoomData
 		},
 		bson.D{{"$unwind", bson.D{{"path", "$people.picture"}}}},
 		bson.D{
-			{"$lookup",
-				bson.D{
-					{"from", "images"},
-					{"localField", "picture"},
-					{"foreignField", "_id"},
-					{"as", "picture"},
-				},
-			},
-		},
-		bson.D{{"$unwind", bson.D{{"path", "$picture"}}}},
-		bson.D{
 			{"$group",
 				bson.D{
 					{"_id", "$_id"},
@@ -73,6 +91,7 @@ func GetRoomList(userId primitive.ObjectID, limit int64, rooms *[]model.RoomData
 				},
 			},
 		},
+		bson.D{{"$sort", bson.D{{"lastUpdate", -1}}}},
 		bson.D{
 			{"$project",
 				bson.D{

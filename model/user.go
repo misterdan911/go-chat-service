@@ -35,3 +35,18 @@ type User struct {
 	TagLine    string             `bson:"tagLine" json:"tagLine"`
 	LastOnline time.Time          `bson:"lastOnline" json:"lastOnline"`
 }
+
+type UserData struct {
+	ID         primitive.ObjectID `bson:"_id" json:"_id"`
+	Email      string             `bson:"email" json:"email"`
+	FirstName  string             `bson:"firstName" json:"firstName"`
+	Level      string             `bson:"level" json:"level"`
+	Password   string             `bson:"password,omitempty" json:"password,omitempty"`
+	Phone      string             `bson:"phone" json:"phone"`
+	LastName   string             `bson:"lastName" json:"lastName"`
+	Username   string             `bson:"username" json:"username"`
+	Picture    Image              `bson:"picture" json:"picture"`
+	Favorites  []string           `bson:"favorites" json:"favorites"`
+	TagLine    string             `bson:"tagLine" json:"tagLine"`
+	LastOnline time.Time          `bson:"lastOnline" json:"lastOnline"`
+}
