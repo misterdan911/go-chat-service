@@ -51,6 +51,6 @@ func main() {
 	app := fiber.New()
 	routes.Setup(app)
 
-	port := os.Getenv("GO_PORT")
-	log.Fatal(app.Listen(":" + port))
+	port := os.Getenv("PORT")
+	log.Fatal(app.Listen("0.0.0.0:" + port))
 }
