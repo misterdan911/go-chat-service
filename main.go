@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
 	_ "go-chat-service/docs"
+	"go-chat-service/routes"
 	"log"
 	"os"
 )
@@ -36,24 +36,28 @@ import (
 // @scope.admin							Grants read and write access to administrative information
 func main() {
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	/*
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 
-	//db.ConnectDatabase()
+		db.ConnectDatabase()
 
-	//mysocketio.Clients = nil
+		mysocketio.Clients = nil
+	*/
 
 	app := fiber.New()
-	//routes.Setup(app)
+	routes.Setup(app)
 
 	var port string
 	port = os.Getenv("PORT")
 
-	if port == "" {
-		port = os.Getenv("DEFAULT_PORT")
-	}
+	/*
+		if port == "" {
+			port = os.Getenv("DEFAULT_PORT")
+		}
+	*/
 
 	log.Fatal(app.Listen("0.0.0.0:" + port))
 }
