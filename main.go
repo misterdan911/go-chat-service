@@ -51,6 +51,12 @@ func main() {
 	app := fiber.New()
 	routes.Setup(app)
 
-	port := os.Getenv("PORT")
+	var port string
+	port = os.Getenv("PORT")
+
+	if port == "" {
+		port = os.Getenv("DEFAULT_PORT")
+	}
+
 	log.Fatal(app.Listen("0.0.0.0:" + port))
 }
