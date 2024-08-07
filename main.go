@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	_ "go-chat-service/docs"
-	"go-chat-service/routes"
 	"log"
 	"os"
 )
@@ -48,7 +47,7 @@ func main() {
 	*/
 
 	app := fiber.New()
-	routes.Setup(app)
+	//routes.Setup(app)
 
 	var port string
 	port = os.Getenv("PORT")
