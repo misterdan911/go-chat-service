@@ -41,17 +41,6 @@ func init() {
 	}
 }
 
-// SignUp godoc
-//
-//	@Summary		Signing up new user
-//	@Description	Signing up new user
-//	@Tags			Authentication
-//	@Accept			json
-//	@Produce		json
-//	@Param			user	body		ExampleSignedUpUser	true	"Add user"
-//	@Success		200		{object}	AppResponse
-//	@Failure		400		{object}	ExampleSignedUpUser
-//	@Router			/api/register [post]
 func SignUp(c *fiber.Ctx) error {
 
 	// Create a new User struct
@@ -128,16 +117,6 @@ func SignUp(c *fiber.Ctx) error {
 	return c.Send(jsonResponse)
 }
 
-// SignIn godoc
-//
-//	@Summary		Signing in user
-//	@Description	Signing in user
-//	@Tags			Authentication
-//	@Accept			json
-//	@Produce		json
-//	@Param			user	body		ExampleSignedInUser	true	"SignIn User"
-//	@Success		200		{object}	AppResponse
-//	@Router			/api/login [post]
 func SignIn(c *fiber.Ctx) error {
 
 	signedInUser := new(dto.SignedInUser)
