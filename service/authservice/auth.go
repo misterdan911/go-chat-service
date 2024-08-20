@@ -75,13 +75,7 @@ func UsernameUnique(fl validator.FieldLevel) bool {
 
 func GenerateJWT(user *model.User) (string, error) {
 
-	// get Picture data of the user
-	var image model.Image
-	err := db.DB.Collection("images").FindOne(context.Background(), bson.M{"_id": user.Picture}).Decode(&image)
-
-	// Create a new token object, specifying signing method and the claims
-	// you would like it to contain.
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	customClaim := jwt.MapClaims{
 		"nbf":       time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
 		"id":        user.ID,
 		"email":     user.Email,
@@ -89,8 +83,19 @@ func GenerateJWT(user *model.User) (string, error) {
 		"firstName": user.FirstName,
 		"lastName":  user.LastName,
 		"username":  user.Username,
-		"picture":   image,
-	})
+	}
+
+	// get Picture data of the user
+	var image model.Image
+	err := db.DB.Collection("images").FindOne(context.Background(), bson.M{"_id": user.Picture}).Decode(&image)
+
+	if err == nil {
+		customClaim["picture"] = image
+	}
+
+	// Create a new token object, specifying signing method and the claims
+	// you would like it to contain.
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, customClaim)
 
 	// Sign and get the complete encoded token as a string using the secret
 	var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
