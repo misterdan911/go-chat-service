@@ -35,9 +35,10 @@ func RoomList(c *fiber.Ctx) error {
 		limit = roomListDto.Limit
 	}
 
-	rooms := new([]model.RoomData)
+	//rooms := new([]model.RoomData)
+	rooms := []model.RoomData{} // Initialize as an empty slice
 
-	err := service.GetRoomList(userId, roomListDto.Limit, rooms)
+	err := service.GetRoomList(userId, roomListDto.Limit, &rooms)
 	if err != nil {
 		return err
 	}
