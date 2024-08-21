@@ -66,7 +66,7 @@ type RoomDetail struct {
 	LastUpdate  time.Time `json:"lastUpdate" bson:"lastUpdate"`
 }
 
-func Message(c *fiber.Ctx) error {
+func SaveMessage(c *fiber.Ctx) error {
 
 	// Create a new User struct
 	socketMessage := new(dto.SocketMessage)
@@ -87,6 +87,10 @@ func Message(c *fiber.Ctx) error {
 
 	// save message to DB
 	_, err := db.DB.Collection("messages").InsertOne(context.Background(), message)
+	if err != nil {
+		// Handle the error
+		fmt.Println("Failed to insert message: ", err)
+	}
 
 	var updatedDocument model.Room
 	filter := bson.D{{"_id", message.Room}}
@@ -96,7 +100,7 @@ func Message(c *fiber.Ctx) error {
 	if errUpdate != nil {
 		// ErrNoDocuments means that the filter did not match any documents in
 		//the collection.
-		if errors.Is(err, mongo.ErrNoDocuments) {
+		if errors.Is(errUpdate, mongo.ErrNoDocuments) {
 			log.Fatal("filter did not match any documents in rooms")
 		}
 		log.Fatal("Error updating lastMessage")
@@ -132,7 +136,8 @@ func Message(c *fiber.Ctx) error {
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$author.picture"}}}},
+		bson.D{{"$unwind", bson.D{{"path", "$author.picture"},
+			{"preserveNullAndEmptyArrays", true}}}},
 	}
 
 	messageCollection := db.DB.Collection("messages")
@@ -154,8 +159,20 @@ func Message(c *fiber.Ctx) error {
 		log.Fatal(err)
 	}
 
+	fmt.Println("message.Room: " + message.Room.Hex())
+
 	var room model.Room
 	err = db.DB.Collection("rooms").FindOne(context.Background(), bson.M{"_id": message.Room}).Decode(&room)
+
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			// Document not found
+			fmt.Println("No room found with the specified ID")
+		} else {
+			// Some other error occurred
+			fmt.Println("Error occurred while querying the database:", err)
+		}
+	}
 
 	messageResponse := MessageResponse{
 		Message: messageDetails[0],
@@ -176,12 +193,14 @@ func Message(c *fiber.Ctx) error {
 	for _, userId := range updatedDocument.People {
 
 		fmt.Println(counter)
-		fmt.Println(userId.Hex())
+		fmt.Println("userId: " + userId.Hex())
+		fmt.Println("Mesage Author: " + message.Author.Hex())
+
 		if message.Author != userId {
 			err = mysocketio.Kws.EmitTo(mysocketio.Clients[userId.Hex()], out, socketio.TextMessage)
-		}
-		if err != nil {
-			fmt.Println(err)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 
 		counter++

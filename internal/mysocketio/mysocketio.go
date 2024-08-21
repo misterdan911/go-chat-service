@@ -13,7 +13,7 @@ func DefineSocketAction() {
 
 	// Multiple event handling supported
 	socketio.On(socketio.EventConnect, func(ep *socketio.EventPayload) {
-		fmt.Println("Connection event 1 - User: %s", ep.Kws.GetStringAttribute("user_id"))
+		fmt.Println("Connection event - User: ", ep.Kws.GetStringAttribute("user_id"))
 	})
 
 }

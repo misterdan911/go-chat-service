@@ -63,7 +63,7 @@ func Setup(app *fiber.App) {
 		mysocketio.Clients[userId] = kws.UUID
 
 		for _, socketClient := range mysocketio.Clients {
-			fmt.Println(socketClient)
+			fmt.Println("socketClient: " + socketClient)
 		}
 
 		// Every websocket connection has an optional session key => value storage
@@ -96,7 +96,7 @@ func Setup(app *fiber.App) {
 	apiBaseRoute.Post("/register", controller.SignUp)
 	apiBaseRoute.Post("/login", controller.SignIn)
 	apiBaseRoute.Get("/info", controller.Info)
-	apiBaseRoute.Post("/message", controller.Message)
+	apiBaseRoute.Post("/message", controller.SaveMessage)
 
 	//apiBaseRoute.Post("/rooms/list", controller.RoomList)
 
