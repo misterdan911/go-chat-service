@@ -45,7 +45,7 @@ type UserData struct {
 	Phone      string             `bson:"phone" json:"phone"`
 	LastName   string             `bson:"lastName" json:"lastName"`
 	Username   string             `bson:"username" json:"username"`
-	Picture    Image              `bson:"picture" json:"picture"`
+	Picture    Image              `bson:"picture,omitempty" json:"picture,omitempty"`
 	Favorites  []string           `bson:"favorites" json:"favorites"`
 	TagLine    string             `bson:"tagLine" json:"tagLine"`
 	LastOnline time.Time          `bson:"lastOnline" json:"lastOnline"`

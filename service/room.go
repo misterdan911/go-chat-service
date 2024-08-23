@@ -76,7 +76,7 @@ func GetRoomList(userId primitive.ObjectID, limit int64, rooms *[]model.RoomData
 				},
 			},
 		},
-		bson.D{{"$unwind", bson.D{{"path", "$people.picture"}}}},
+		bson.D{{"$unwind", bson.D{{"path", "$people.picture"}, {"preserveNullAndEmptyArrays", true}}}},
 		bson.D{
 			{"$group",
 				bson.D{
